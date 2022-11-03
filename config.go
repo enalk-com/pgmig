@@ -21,8 +21,8 @@ type Config struct {
 	Host          string `toml:"host"`
 	Port          string `toml:"port"`
 	User          string `toml:"user"`
-	Pwd           string `toml:"password"`
-	DB            string `toml:"database"`
+	Pwd           string `toml:"pwd"`
+	DB            string `toml:"db"`
 	SSL_MODE      string `toml:"sslmode"`
 	SSL_CERT      string `toml:"sslcert"`
 	SSL_KEY       string `toml:"sslkey"`
