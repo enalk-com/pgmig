@@ -34,7 +34,7 @@ func (c Config) validate() error {
 		return !strings.ContainsRune(s, '\\') && !strings.ContainsRune(s, '\'')
 	}
 
-	es := "single quotes and baclslashes are not allowed"
+	es := "single quotes and backslashes are not allowed"
 	if !valid(c.Host) {
 		return fmt.Errorf("invalid host. %s", es)
 	}
@@ -105,6 +105,18 @@ func (c Config) ensureMigrationDirectory() error {
 	return fmt.Errorf("could not ensure migrations directory at: %s", c.MigrationsDir)
 }
 
+func (c *Config) exapndEnv() {
+	c.MigrationsDir = os.ExpandEnv(c.MigrationsDir)
+	c.Host = os.ExpandEnv(c.Host)
+	c.Port = os.ExpandEnv(c.Port)
+	c.User = os.ExpandEnv(c.User)
+	c.Pwd = os.ExpandEnv(c.Pwd)
+	c.DB = os.ExpandEnv(c.DB)
+	c.SSL_MODE = os.ExpandEnv(c.SSL_MODE)
+	c.SSL_CERT = os.ExpandEnv(c.SSL_CERT)
+	c.SSL_KEY = os.ExpandEnv(c.SSL_KEY)
+}
+
 func NewConfig(p string) (*Config, error) {
 	if !validConfigurationFile(p) {
 		return nil, fmt.Errorf("configuration file path invalid")
@@ -117,6 +129,8 @@ func NewConfig(p string) (*Config, error) {
 	if err := toml.Unmarshal(bs, &c); err != nil {
 		return nil, err
 	}
+	c.exapndEnv()
+
 	if c.SSL_MODE == "" {
 		c.SSL_MODE = "disable"
 	}
